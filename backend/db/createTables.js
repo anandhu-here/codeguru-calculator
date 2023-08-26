@@ -13,16 +13,20 @@ async function createUsersTable() {
   `;
 
   try {
-    await pool.query(createTableQuery);
+    const client = await pool.connect();
+    await client.query(createTableQuery);
     console.log('Users table created (if not exists)');
+    client.release()
   } catch (error) {
     console.error('Error creating users table:', error);
+  }finally {
+    pool.end(); // Close the connection pool
   }
 }
 
 async function createCalculatorTable() {
   const createTableQuery = `
-    CREATE TABLE expenses (
+    CREATE TABLE IF NOT EXISTS expenses (
       id SERIAL PRIMARY KEY,
       category VARCHAR(50) NOT NULL,
       description TEXT,
@@ -34,10 +38,14 @@ async function createCalculatorTable() {
   `;
 
   try {
-    await pool.query(createTableQuery);
+    const client = await pool.connect();
+    await client.query(createTableQuery);
     console.log('Users table created (if not exists)');
+    client.release()
   } catch (error) {
     console.error('Error creating users table:', error);
+  }finally {
+    pool.end(); // Close the connection pool
   }
 }
 
