@@ -1,0 +1,3 @@
+GET http://localhost:3001/expenses/get/2023/08
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJtYWhpa2FAZ21haWwuY29tIiwiaWF0IjoxNjkzMDE4MTA1LCJleHAiOjE2OTMxMDQ1MDV9.iy61BELvOPPngtP_53s45cn0reEJxZOxGKnnjCOlztY
+
