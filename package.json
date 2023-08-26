@@ -1,0 +1,15 @@
+{
+  "name": "calculator",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/anandhu-here/codeguru-calculator.git",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^8.2.1"
+  },
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npm run dev",
+    "start:frontend": "cd web-client && npm start"
+  }
+}
