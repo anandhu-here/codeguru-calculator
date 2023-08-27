@@ -37,8 +37,10 @@ export default function LoginForm() {
       dispatch({type:LOGIN_OK, payload:response.data});
       window.location.href = "/"
     }).catch(error=>{
+      
       setLoading(false)
       dispatch({type:LOGIN_FAILED});
+      alert(JSON.stringify(error.message))
     })
   };
 

@@ -62,7 +62,7 @@ module.exports = (app, db) => {
             const t = req.headers.authorization;
             const token = t.split(" ").length>1?t.split(" ")[1]:t.split(" ")[0];
             const {user, id} = verifyToken(token);
-            console.log(id)
+            const { year } = req.params; 
 
             const query = `
                 SELECT MIN(id) AS id, user_id AS userid, to_char(date, 'YYYY-MM') AS month,
@@ -123,8 +123,10 @@ module.exports = (app, db) => {
         
                 data.push(monthData);
             }
+
+            const yearlyData = data.filter(monthData => monthData.month.startsWith(year));
         
-            res.status(200).json(data);
+            res.status(200).json(yearlyData);
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'An error occurred while fetching expenses.' });

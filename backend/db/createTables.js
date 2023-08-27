@@ -19,8 +19,6 @@ async function createUsersTable() {
     client.release()
   } catch (error) {
     console.error('Error creating users table:', error);
-  }finally {
-    pool.end(); // Close the connection pool
   }
 }
 
@@ -44,8 +42,6 @@ async function createCalculatorTable() {
     client.release()
   } catch (error) {
     console.error('Error creating users table:', error);
-  }finally {
-    pool.end(); // Close the connection pool
   }
 }
 

@@ -5,7 +5,12 @@
   "repository": "https://github.com/anandhu-here/codeguru-calculator.git",
   "license": "MIT",
   "dependencies": {
-    "concurrently": "^8.2.1"
+    "@react-navigation/native": "^6.1.7",
+    "@react-navigation/stack": "^6.3.17",
+    "concurrently": "^8.2.1",
+    "react-native-gesture-handler": "^2.12.1",
+    "react-native-safe-area-context": "^4.7.1",
+    "react-native-screens": "^3.24.0"
   },
   "scripts": {
     "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",

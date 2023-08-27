@@ -127,7 +127,7 @@ function Calculator() {
     const userContext = useSelector(state=>state.userState);
     const [ expense_year, setExpYear ] = useState([]);
     const [ date, setDate ] = useState(dayjs());
-    const [ y_data, setYData ] = useState([0,0,0,0,0,0,0,100]);
+    const [ y_data, setYData ] = useState(Array(month_names.slice(0, dayjs().month())));
     const [ loading, setLoading ] = useState(true);
 
     const options={
@@ -187,7 +187,7 @@ function Calculator() {
             setExpense(response.data);
             getExpenses(date.year(), date.month(),  userContext.userInfo.token).then(response=>{
                 
-                var series = Array(date.month()+1).fill(0);
+                var series = Array(date.month()).fill(0);
                 for (var month of response.data ){
                     var index = dayjs(month.month).month()+1;
                     var expense = month.totalAmount;

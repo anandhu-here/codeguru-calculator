@@ -1,4 +1,4 @@
-POST https://50.16.151.27:3001/signup
+POST http://50.16.151.27:3001/signup
 Content-Type: application/json
 
 {

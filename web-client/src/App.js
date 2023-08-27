@@ -26,7 +26,8 @@ export default function App() {
         setLoading(false)
         setAuth(true);
       }).catch(error=>{
-        console.log(error, "error")
+        
+        alert(JSON.stringify(error.message))
 
         dispatch({type:"LOGIN_FAILED", payload:null});
         setLoading(false)

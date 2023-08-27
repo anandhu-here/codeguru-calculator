@@ -238,6 +238,7 @@ function CollapsibleSideBar({user_id, setExpense, date}) {
 
             }).catch(error=>{
                 console.log(error)
+                alert(JSON.stringify(error.message))
             })
         }} >
             <AddRounded fontSize="30px" htmlColor={"white"} />

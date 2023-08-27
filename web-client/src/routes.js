@@ -10,6 +10,7 @@ import Test from './components/Calculator/Insights';
 import Signup from './pages/Auth/Signup/Signup';
 import Signin from './pages/Auth/Signin/Signin';
 import Insights from './components/Calculator/Insights';
+import PdfDownload from './pages/PdfDownload';
 
 // ----------------------------------------------------------------------
 
@@ -71,6 +72,10 @@ export default function Router({auth}) {
     {
       path: 'login',
       element:!auth?<Signin />:<Navigate to="/dashboard" />,
+    },
+    {
+      path:'download-pdf',
+      element:<PdfDownload />
     },
     {
       path: 'register',

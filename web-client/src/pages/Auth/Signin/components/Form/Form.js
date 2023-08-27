@@ -42,6 +42,7 @@ const Form = () => {
     }).catch(error=>{
       setLoading(false)
       dispatch({type:LOGIN_FAILED});
+      alert(JSON.stringify(error.message))
     })
   };
 

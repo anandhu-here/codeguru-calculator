@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from '@mui/styles';
-import { Box, Checkbox, Collapse, Grid, IconButton, Input, ListItemIcon, ListItemText, Menu, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Box, Button, Checkbox, Collapse, Grid, IconButton, Input, ListItemIcon, ListItemText, Menu, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { ArrowDownward, ArrowDropDown, ArrowDropUp, ArrowUpward, DeleteForever, Edit, EditAttributes, MoreVert } from "@mui/icons-material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSpring, animated } from "react-spring";
 import FilterTable from "./FilterTable";
 import Loader from "../../utils/loader";
+import html2pdf from 'html2pdf.js';
 
 
 const useRowStyles = makeStyles({
@@ -66,29 +67,6 @@ const CollapsedRow = ({ childrenRow, row }) => {
                         console.log(day.expenses, "p")
                     }
                 }
-                // if(day.expenses.length === 1){
-                //     if(day.expenses[0].id === rowId){
-                //         if(month.days.length === 1){
-                //             updated = updated.filter(up=>up.id !== month.id)
-                //         }
-                //         else{
-                //             month.days = month.days.filter(d=>d.id !== day.id)
-                //         }
-                //     }
-                    
-                // }
-                // else{
-                //     for (const exp of day.expenses){
-                //         if(exp.id === rowId){
-                //             day.expenses = day.expenses.filter(expense => expense.id !== rowId);
-                //             console.log(day.expenses, "p")
-                //         }
-                //     }
-                // }
-            //   if (day.id === rowId) { // Change this to 40
-            //     console.log(day.id, "id")
-            //     day.expenses = day.expenses.filter(expense => expense.id !== 40);
-            //   }
             }
           }
 
@@ -281,12 +259,14 @@ function Row(props) {
 function Table1() {
   const [ date, setDate ] = useState(dayjs());
   const [rows, setrows] = useState([]);
+  const [ pdfYear, setYear ] = useState(dayjs().year())
   const appContext = useSelector(state=>state.appState);
   const userContext = useSelector(state=>state.userState);
   const dispatch = useDispatch();
 
   useEffect(()=>{
     getExpenses(date.year(), date.month()+1, userContext.userInfo.token).then(response=>{
+      console.log(response.data, "data")
         dispatch({type:"SET_EXPENSES_LIST", payload:response.data});
         dispatch({type:"SET_EXPENSES_LIST_BACK", payload:response.data});
         setrows(response.data)
@@ -298,6 +278,109 @@ const { scale } = useSpring({
   to: { scale: 1 }, // Final scale
   config: { tension: 200, friction: 12 }, // Animation configuration
 });
+
+const downloadPdf = () =>{
+  console.log(rows, "ddd")
+  var htmlContent = `
+          <html>
+              <head>
+                  <style>
+                      .markdown_div:{
+                          background-color:'red'
+                      }
+                      
+                      .image{
+                          display:flex;
+                          width:100px !important;
+                          margin:0 auto !important;
+                          height:auto !important;
+                          object-fit:contain !important;
+                      }
+                      table {
+                        border-collapse: collapse;
+                        width: 100%;
+                        border: 1px solid #ccc;
+                      }
+                      
+                      th, td {
+                        padding: 12px;
+                        text-align: left;
+                        border-bottom: 1px solid #ddd;
+                      }
+                      
+                      th {
+                        background-color: #f2f2f2;
+                        font-weight: bold;
+                      }
+                      
+                      tr:nth-child(even) {
+                        background-color: #f5f5f5;
+                      }
+                      
+                      tr:hover {
+                        background-color: #e0e0e0;
+                      }
+                      highlight {
+                        font-weight:700;
+                      }
+                  </style>
+              </head>
+              <body>
+                  <h3>Your Yearly Expenses</h3>
+                  <h4>${pdfYear}</h4>
+                  <table >
+                  <tr style='margin:'10px 5px';' >
+                      <th>Month</th>
+                      <th>Total Amount</th>
+                  </tr>
+                  ${
+                    [...rows].reverse().map(row=>`
+                      <tr>
+                        <td class="highlight" > ${row.month}</td>
+                        <td class="highlight">${row.totalAmount}</td>
+                      </tr>
+                      ${row.days.length>0&&`
+                        <tr class="subrow" >
+                          <td> Day</td>
+                          <td> Category </td>
+                          <td> Spent </td>
+                        </tr>
+                      `}
+                      ${
+                        row.days?.map(day=>`
+                          ${
+                            day.expenses.map(exp=>`
+                            <tr class="subrow" >
+                              <td> ${day.day}</td>
+                              <td> ${exp.category}</td>
+                              <td>${exp.amount}</td>
+                            </tr>
+                            `)
+                          }
+                        `)
+                      }
+                    `)
+                  }
+                  </table>
+              </body>
+          </html>
+          `
+
+          const tempElement = document.createElement('div');
+            tempElement.innerHTML = htmlContent;
+            const opt = {
+              margin: 10,
+              filename: `pdf`,
+              image: { type:'svg', quality: 0.98 },
+              html2canvas: { scale: 2, useCORS:true },
+              jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            };
+        
+            // Create the PDF using html2pdf.js and trigger the download
+            html2pdf().set(opt).from(tempElement).save();
+
+}
+
 return (
 <animated.div style={{
     display:'flex',
@@ -342,6 +425,14 @@ return (
         <TableCell align="right">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker closeOnSelect views={["year"]} value={dayjs(date)} format="YYYY" onChange={date=>{
+                  setYear(dayjs(date).year());
+                  console.log(date.year(), date.month()+1, "fuckkk")
+                  getExpenses(date.year(), date.month()+1, userContext.userInfo.token).then(response=>{
+                    console.log(response.data, "data")
+                      dispatch({type:"SET_EXPENSES_LIST", payload:response.data});
+                      dispatch({type:"SET_EXPENSES_LIST_BACK", payload:response.data});
+                      setrows(response.data)
+                  })
                     // setLoading(true);
                     // setDate(date);
                     // getExpensesByMonth(`0${date.month()+1}`, `${date.year()}`).then(response=>{
@@ -355,6 +446,13 @@ return (
                     // })
                 }} />
             </LocalizationProvider>
+        </TableCell>
+        <TableCell align="right">
+          <Button onClick={()=>{
+            downloadPdf()
+          }} >
+            Download pdf
+          </Button>
         </TableCell>
       </TableRow>
     </TableHead>
