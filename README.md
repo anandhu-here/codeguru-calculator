@@ -18,5 +18,5 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 ### cd backend && `npm run dev`
 
 ## Database
-## The db used here is Postgres, which is hosted on AWS for development and testing pusrposes.
-## db configuration file can be found in 'codeguru-calculator/backend/db/cong.js'. ( Feel free to change it to localhost )
+### The db used here is Postgres, which is hosted on AWS for development and testing pusrposes.
+### db configuration file can be found in 'codeguru-calculator/backend/db/cong.js'. ( Feel free to change it to localhost )
